@@ -35,9 +35,3 @@ withNightlyPipeline("java", product, component) {
     enableSlackNotifications('#performance-testing')
 
 }
-
-withPipeline(type, product, component) {
-
-    // add this!
-    enablePerformanceTest()
-}
