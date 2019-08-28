@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccd.corecasedata.simulations
 
 import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
+import io.gatling.http.Predef.Proxy
 import uk.gov.hmcts.ccd.corecasedata.scenarios._
 import uk.gov.hmcts.ccd.corecasedata.scenarios.utils._
 
