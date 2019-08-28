@@ -1,2 +1,2 @@
-# cdm-test.performance
-Gatling performance tests for CCD
+# ccd-cdm-performance
+Nightly pipeline tests for CCD/CDM
