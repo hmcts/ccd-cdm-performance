@@ -32,6 +32,6 @@ withNightlyPipeline("java", product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
     }
 
-    enableSlackNotifications('#performance-testing')
+    //enableSlackNotifications('#performance-testing')
 
 }
