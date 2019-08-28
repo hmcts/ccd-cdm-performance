@@ -32,7 +32,7 @@ withNightlyPipeline("java", product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
     }
 
-    //enableSlackNotifications('#jui-nightly-builds')
+    enableSlackNotifications('#performance-testing')
 
 }
 
