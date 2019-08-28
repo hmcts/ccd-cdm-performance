@@ -17,8 +17,8 @@ properties([
 @Library("Infrastructure") 
 
 
-def product = ""
-def component = ""
+def product = "ccd"
+def component = "case-worker"
 
 withNightlyPipeline("java", product, component) {
     env.TEST_URL = 'https://ccd-api-gateway-web-perftest.service.core-compute-perftest.internal'
