@@ -5,5 +5,4 @@ target/**
 *.iml
 *.project
 .gradle/
-build/**
 *.log
