@@ -22,6 +22,8 @@ class CCDUIPTSimulation extends Simulation  {
     exec(
       Browse.Homepage,
       ExecuteLogin.submitLogin,
+      CreateCaseObj.setJurisdiction,
+      CreateCaseObj.setCaseType,
       CreateCaseObj.selectJurisdiction,
       CreateCaseObj.startNewCaseCreation,
       Validate.validateFirstPage,
@@ -63,10 +65,27 @@ class CCDUIPTSimulation extends Simulation  {
     )
   }
 
+  val CCDCMCScenario = scenario("CCDCMC").repeat(1)
+  {
+    exec(
+      Browse.Homepage,
+      CMC.setJurisdiction,
+      CMC.setCaseType,
+      CMC.CMCLogin,
+      CMC.CMCCreateCase,
+      CMC.CMCSubmitPayment,
+      CMC.CMCSearchAndView,
+      Logout.ccdLogout
+      //WaitforNextIteration.waitforNextIteration
+    )
+  }
+
   setUp(
     CCDUIScenario.inject(rampUsers(1) during (1 minutes)),
     CCDProbateScenario.inject(rampUsers(1) during (1 minutes)),
-    CCDSSCSScenario.inject(rampUsers(1) during (1 minutes)))
+    CCDSSCSScenario.inject(rampUsers(1) during (1 minutes)),
+    CCDCMCScenario.inject(rampUsers(1) during (1 minutes))
+  )
     .protocols(httpProtocol)
     //.maxDuration(1 minutes)
 }

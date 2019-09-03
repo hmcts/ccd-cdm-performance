@@ -3,7 +3,6 @@ package uk.gov.hmcts.ccd.corecasedata.scenarios
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.ccd.corecasedata.scenarios.utils.Environment
-
 import scala.concurrent.duration._
 
 object SubmitCase {
