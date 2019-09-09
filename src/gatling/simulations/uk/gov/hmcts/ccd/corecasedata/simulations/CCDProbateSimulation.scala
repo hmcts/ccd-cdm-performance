@@ -17,7 +17,7 @@ class CCDProbateSimulation extends Simulation  {
     .proxy(Proxy("proxyout.reform.hmcts.net", 8080).httpsPort(8080))
     .doNotTrackHeader("1")
 
-  val CCDProbateScenario = scenario("CCDUI").repeat(100)
+  val CCDProbateScenario = scenario("CCDUI").repeat(1)
   {
     exec(
       Browse.Homepage,
@@ -27,15 +27,15 @@ class CCDProbateSimulation extends Simulation  {
       PBGoR.PBPaymentSuccessful,
       PBGoR.PBDocUpload,
       PBGoR.PBSearchAndView,
-      //PBGoR.PrintCaseID,
-      Logout.ccdLogout)
+      Logout.ccdLogout
+    )
       //WaitforNextIteration.waitforNextIteration)
   }
 
   //setUp(CCDProbateScenario.inject(atOnceUsers(1))).protocols(httpProtocol)
   setUp(CCDProbateScenario
-    .inject(rampUsers(100) during (20 minutes))
+    .inject(rampUsers(1) during (1 minutes))
     .protocols(httpProtocol))
-    .maxDuration(80 minutes)
+    //.maxDuration(80 minutes)
 }
 

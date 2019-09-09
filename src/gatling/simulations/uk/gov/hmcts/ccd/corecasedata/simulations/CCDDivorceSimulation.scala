@@ -1,12 +1,12 @@
 package uk.gov.hmcts.ccd.corecasedata.simulations
 
-import scala.concurrent.duration._
-import uk.gov.hmcts.ccd.corecasedata.scenarios._
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
-import io.gatling.jdbc.Predef._
+import io.gatling.http.Predef._
+import uk.gov.hmcts.ccd.corecasedata.scenarios._
 import uk.gov.hmcts.ccd.corecasedata.scenarios.utils.Environment
+
+import scala.concurrent.duration._
 
 class CCDDivorceSimulation extends Simulation  {
 
@@ -22,11 +22,11 @@ class CCDDivorceSimulation extends Simulation  {
     exec(
       //Logout.ccdLogout,
       Browse.Homepage,
-      //DivorceSearch.DivorceLogin,
       ExecuteLogin.submitLogin,
       DVExcep.DVCreateCase,
-      //DivorceSearch.SearchResult,
-      //Logout.ccdLogout,
+      DVExcep.DVDocUpload,
+      DVExcep.DVSearchAndView,
+      Logout.ccdLogout,
       //WaitforNextIteration.waitforNextIteration
      )
   }
@@ -35,5 +35,5 @@ class CCDDivorceSimulation extends Simulation  {
   setUp(CCDDivorceScenario
     .inject(rampUsers(1) during (1 minutes))
     .protocols(httpProtocol))
-    .maxDuration(1 minutes)
+    //.maxDuration(1 minutes)
 }
