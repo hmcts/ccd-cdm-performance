@@ -3,6 +3,7 @@ package uk.gov.hmcts.ccd.corecasedata.scenarios
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import uk.gov.hmcts.ccd.corecasedata.scenarios.utils.Environment
+
 import scala.concurrent.duration._
 
 object CMC {
@@ -31,6 +32,14 @@ object CMC {
     "Sec-Fetch-Mode" -> "cors",
     "experimental" -> "true")
 
+  val headers_7 = Map(
+    "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-user-profile.v2+json;charset=UTF-8",
+    "Content-Type" -> "application/json",
+    "Origin" -> CCDEnvurl,
+    "Sec-Fetch-Mode" -> "cors",
+    "Sec-Fetch-Site" -> "cross-site",
+    "experimental" -> "true")
+
   val headers_8 = Map(
     "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json",
     "Content-Type" -> "application/json",
@@ -42,21 +51,37 @@ object CMC {
     "Sec-Fetch-Mode" -> "cors",
     "experimental" -> "true")
 
-  val setJurisdiction = exec(session => {
-    session.set("Jurisdiction", "CMC")
-  })
-    .exec(session => {
-      println(session)
-      session
-    })
+  val headers_13 = Map(
+    "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-banners.v2+json;charset=UTF-8",
+    "Content-Type" -> "application/json",
+    "Origin" -> CCDEnvurl,
+    "Sec-Fetch-Mode" -> "cors",
+    "Sec-Fetch-Site" -> "cross-site",
+    "experimental" -> "true")
 
-  val setCaseType = exec(session => {
-    session.set("CaseType", "MoneyClaimCase")
-  })
-    .exec(session => {
-      println(session)
-      session
-    })
+  val headers_14 = Map(
+    "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-workbasket-input-details.v2+json;charset=UTF-8",
+    "Content-Type" -> "application/json",
+    "Origin" -> CCDEnvurl,
+    "Sec-Fetch-Mode" -> "cors",
+    "Sec-Fetch-Site" -> "cross-site",
+    "experimental" -> "true")
+
+  val headers_16 = Map(
+    "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json;charset=UTF-8",
+    "Content-Type" -> "application/json",
+    "Origin" -> CCDEnvurl,
+    "Sec-Fetch-Mode" -> "cors",
+    "Sec-Fetch-Site" -> "cross-site",
+    "experimental" -> "true")
+
+  val headers_23 = Map(
+    "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json;charset=UTF-8",
+    "Content-Type" -> "application/json",
+    "Origin" -> CCDEnvurl,
+    "Sec-Fetch-Mode" -> "cors",
+    "Sec-Fetch-Site" -> "cross-site",
+    "experimental" -> "true")
 
   val CMCLogin = group("CMC_Login") {
 
@@ -70,121 +95,121 @@ object CMC {
       .formParam("selfRegistrationEnabled", "false")
       .formParam("_csrf", "${csrf}")
       .check(headerRegex("Location", "(?<=code=)(.*)&scope").saveAs("authCode"))
-      .check(status.in(200, 302))
+      .check(status.in(200, 302)))
 
-      .resources(http("CDM_020_010_Login")
-        .get(CCDEnvurl + "/config")
-        .headers(CommonHeader)))
+      .exec(http("CDM_020_010_Login")
+        .get(CCDEnvurl)
+        .headers(CommonHeader)) //1
 
       .exec(http("CDM_020_015_Login")
         .options(BaseURL + "/oauth2?code=${authCode}&redirect_uri=" + CCDEnvurl + "/oauth2redirect")
-        .headers(CommonHeader))
+        .headers(CommonHeader)) //2
+
       .exec(http("CDM_020_020_Login")
         .get(BaseURL + "/oauth2?code=${authCode}&redirect_uri=" + CCDEnvurl + "/oauth2redirect")
-        .headers(CommonHeader))
+        .headers(CommonHeader)) //3
+
       .exec(http("CDM_020_025_Login")
-        .get(CCDEnvurl + "/config")
-        .headers(CommonHeader))
+        .get(CCDEnvurl)
+        .headers(CommonHeader)) //1
 
       .exec(http("CDM_020_030_Login")
-        .options(BaseURL + "/data/caseworkers/:uid/profile"))
+        .options(BaseURL + "/data/internal/profile")
+        .headers(CommonHeader)) //5
 
       .exec(http("CDM_020_035_Login")
-        .get(BaseURL + "/data/caseworkers/:uid/profile")
-        .headers(CommonHeader))
+        .options(BaseURL + "/activity/cases/0/activity")
+        .headers(headers_2)) //2
 
       .exec(http("CDM_020_040_Login")
-        .options(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types?access=read")
-        .resources(http("CDM_020_045_Login")
-          .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types?access=read")
-          .headers(CommonHeader)))
+        .get(BaseURL + "/data/internal/profile")
+        .headers(headers_7)) //7
+
+      .exec(http("CDM_020_045_Login")
+        .options(BaseURL + "/data/internal/banners/?ids=${CMCJurisdiction}")
+        .headers(CommonHeader)) //5
 
       .exec(http("CDM_020_050_Login")
-        .options(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types/${CaseType}/work-basket-inputs"))
+        .options(BaseURL + "/data/internal/case-types/${CMCCaseType}/work-basket-inputs")
+        .headers(CommonHeader)) //5
 
       .exec(http("CDM_020_055_Login")
-        .options(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types/${CaseType}/cases?view=WORKBASKET&state=TODO&page=1"))
+        .options(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases?view=WORKBASKET&state=create&page=1")
+        .headers(CommonHeader)) //2
 
       .exec(http("CDM_020_060_Login")
-        .options(BaseURL + "/data/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types/${CaseType}/cases/pagination_metadata?state=TODO"))
+        .get(BaseURL + "/activity/cases/0/activity")
+        .headers(CommonHeader)) //3
 
       .exec(http("CDM_020_065_Login")
-        .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types/${CaseType}/work-basket-inputs")
-        .headers(CommonHeader))
+        .options(BaseURL + "/data/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases/pagination_metadata?state=create")
+        .headers(CommonHeader)) //2
 
       .exec(http("CDM_020_070_Login")
-        .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types/${CaseType}/cases?view=WORKBASKET&state=TODO&page=1")
-        .headers(CommonHeader))
+        .get(BaseURL + "/data/internal/banners/?ids=${CMCJurisdiction}")
+        .headers(headers_13)) //13
 
       .exec(http("CDM_020_075_Login")
-        .get(BaseURL + "/data/caseworkers/:uid/jurisdictions/${Jurisdiction}/case-types/${CaseType}/cases/pagination_metadata?state=TODO")
-        .headers(CommonHeader))
+        .get(BaseURL + "/data/internal/case-types/${CMCCaseType}/work-basket-inputs")
+        .headers(headers_14)) //14
+
+      .exec(http("CDM_020_080_Login")
+        .get(BaseURL + "/data/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases/pagination_metadata?state=create")
+        .headers(CommonHeader)) //3
+
+      .exec(http("CDM_020_085_Login")
+        .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases?view=WORKBASKET&state=create&page=1")
+        .headers(CommonHeader)) //3
 
       .pause(MinThinkTime seconds, MaxThinkTime seconds)
   }
 
   val CMCCreateCase = group("CMC_Create") {
-
     exec(http("CMC_030_005_CreateCase")
       .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions?access=create")
       .headers(CommonHeader))
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
     .exec(http("CMC_030_010_CreateCase")
-      .get(BaseURL + "/data/internal/case-types/MoneyClaimCase/event-triggers/SubmitPrePayment?ignore-warning=false")
+      .get("/data/internal/case-types/${CMCCaseType}/event-triggers/CreateClaim?ignore-warning=false")
       .headers(headers_1)
       .check(jsonPath("$.event_token").saveAs("New_Case_event_token")))
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
     .exec(http("CMC_030_015_CreateCase")
-      .post(BaseURL + "/data/caseworkers/:uid/jurisdictions/CMC/case-types/MoneyClaimCase/cases?ignore-warning=false")
+      .post(BaseURL + "/data/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases?ignore-warning=false")
       .headers(CommonHeader)
-      .body(StringBody("{\n  \"data\": {\n    \"externalId\": \"cmc-id\"\n  },\n  \"event\": {\n    \"id\": \"SubmitPrePayment\",\n    \"summary\": \"cmc-create-case\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${New_Case_event_token}\",\n  \"ignore_warning\": false,\n  \"draft_id\": null\n}"))
+      .body(StringBody("{\n  \"data\": {},\n  \"event\": {\n    \"id\": \"CreateClaim\",\n    \"summary\": \"pipeline-test1202\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${New_Case_event_token}\",\n  \"ignore_warning\": false,\n  \"draft_id\": null\n}"))
       .check(jsonPath("$.id").saveAs("New_Case_Id")))
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
   }
 
-  val PrintCaseID = exec {
-    session =>
-      println(session("New_Case_Id").as[String])
-      session
-  }
-
-  val CMCSubmitPayment = group("CMC_SubmitPayment")
-  {
-    exec(http("CMC_040_005_SubmitPayment")
-      .get(BaseURL + "/data/internal/cases/${New_Case_Id}/event-triggers/SubmitPostPayment?ignore-warning=false")
-      .headers(headers_11)
+  val CMCSubmitCase = group("CMC_Submit") {
+    exec(http("CMC_040_005_SubmitCase")
+      .get("/data/internal/cases/${New_Case_Id}/event-triggers/IssueClaim?ignore-warning=false")
+      .headers(headers_16)
       .check(jsonPath("$.event_token").saveAs("existing_case_event_token")))
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .exec(http("CMC_040_010_SubmitCase")
+      .post("/data/cases/${New_Case_Id}/events")
+      .headers(headers_23)
+      .body(StringBody("{\n  \"data\": {},\n  \"event\": {\n    \"id\": \"IssueClaim\",\n    \"summary\": \"pipeline-claim-submitted\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${existing_case_event_token}\",\n  \"ignore_warning\": false\n}")))
 
-    .exec(http("CMC_040_010_SubmitPayment")
-      .post(BaseURL + "/data/caseworkers/:uid/jurisdictions/CMC/case-types/MoneyClaimCase/cases/${New_Case_Id}/events")
-      .headers(CommonHeader)
-      .body(StringBody("{\n  \"data\": {\n    \"interestDateType\": \"CUSTOM\",\n    \"interestType\": \"BREAKDOWN\",\n    \"subjectType\": \"CLAIMANT\",\n    \"amountType\": \"NOT_KNOWN\",\n    \"interestEndDateType\": \"SUBMISSION\",\n    \"evidence\": [],\n    \"defendants\": [],\n    \"claimants\": [],\n    \"timeline\": [],\n    \"feeCode\": null,\n    \"interestRate\": null,\n    \"interestReason\": null,\n    \"interestBreakDownAmount\": null,\n    \"interestBreakDownExplanation\": null,\n    \"interestSpecificDailyAmount\": null,\n    \"interestClaimStartDate\": \"2019-08-01\",\n    \"interestStartDateReason\": null,\n    \"housingDisrepairOtherDamages\": null,\n    \"housingDisrepairCostOfRepairDamages\": null,\n    \"personalInjuryGeneralDamages\": null,\n    \"issuedOn\": \"2019-08-30\",\n    \"submittedOn\": \"2019-08-30T12:00:00.000\",\n    \"submitterEmail\": null,\n    \"id\": null,\n    \"features\": null,\n    \"subjectName\": null,\n    \"paymentId\": null,\n    \"paymentAmount\": null,\n    \"paymentReference\": null,\n    \"paymentStatus\": null,\n    \"submitterId\": null,\n    \"paymentDateCreated\": \"2019-08-30\",\n    \"externalId\": \"cmc-id\",\n    \"referenceNumber\": null,\n    \"feeAmountInPennies\": null,\n    \"reason\": null,\n    \"sotSignerName\": null,\n    \"sotSignerRole\": null,\n    \"feeAccountNumber\": null,\n    \"externalReferenceNumber\": null,\n    \"preferredCourt\": null\n  },\n  \"event\": {\n    \"id\": \"SubmitPostPayment\",\n    \"summary\": \"\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${existing_case_event_token}\",\n  \"ignore_warning\": false\n}")))
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
   }
 
   val CMCSearchAndView = group("CMC_View") {
     exec(http("CMC_050_005_SearchPage")
-      .get("/data/internal/case-types/MoneyClaimCase/work-basket-inputs")
+      .get("/data/internal/case-types/${CMCCaseType}/work-basket-inputs")
       .headers(headers_0))
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .exec(http("CMC_050_010_SearchAndView")
-      .get("/aggregated/caseworkers/:uid/jurisdictions/CMC/case-types/MoneyClaimCase/cases?view=WORKBASKET&page=1&case_reference=${New_Case_Id}")
+      .get("/aggregated/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases?view=WORKBASKET&page=1&case_reference=${New_Case_Id}")
       .headers(CommonHeader))
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .exec(http("CMC_050_015_SearchAndView")
-      .get("/data/caseworkers/:uid/jurisdictions/CMC/case-types/MoneyClaimCase/cases/pagination_metadata?case_reference=${New_Case_Id}")
+      .get("/data/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases/pagination_metadata?case_reference=${New_Case_Id}")
       .headers(CommonHeader))
 
     .exec(http("CMC_050_020_SearchAndView")
