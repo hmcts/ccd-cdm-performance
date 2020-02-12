@@ -108,7 +108,7 @@ object SSCS {
     .exec(http("CDM_020_035_Login")
       .options(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${SSCSJurisdiction}/case-types?access=read"))
 
-    .exec(http("CDM_020_040_Login")
+    .exec(http("CDM_020_040_Login") //slow step???
       .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions/${SSCSJurisdiction}/case-types?access=read")
       .headers(CommonHeader))
 

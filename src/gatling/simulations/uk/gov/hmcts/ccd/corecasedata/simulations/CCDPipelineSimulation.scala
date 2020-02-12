@@ -20,6 +20,18 @@ class CCDPipelineSimulation extends Simulation  {
   val CCDOvernightPipelineE2E = scenario( "CCDOvernight").repeat(1) {
     exec(
       Browse.Homepage,
+      DVExcep.DVLogin,
+      DVExcep.DVCreateCase,
+      DVExcep.DVDocUpload,
+      DVExcep.DVSearchAndView,
+      Logout.ccdLogout,
+      Browse.Homepage,
+      CMC.CMCLogin,
+      CMC.CMCCreateCase,
+      CMC.CMCSubmitCase,
+      CMC.CMCSearchAndView,
+      Logout.ccdLogout,
+      Browse.Homepage,
       PBGoR.PBLogin,
       PBGoR.PBCreateCase,
       PBGoR.PBPaymentSuccessful,
@@ -32,19 +44,7 @@ class CCDPipelineSimulation extends Simulation  {
       SSCS.PrintCaseID,
       SSCS.SSCSDocUpload,
       SSCS.SSCSSearchAndView,
-      Logout.ccdLogout,
-      Browse.Homepage,
-      CMC.CMCLogin,
-      CMC.CMCCreateCase,
-      CMC.CMCSubmitCase,
-      CMC.CMCSearchAndView,
-      Logout.ccdLogout,
-//      Browse.Homepage,
-//      DVExcep.DVLogin,
-//      DVExcep.DVCreateCase,
-//      DVExcep.DVDocUpload,
-//      DVExcep.DVSearchAndView,
-//      Logout.ccdLogout
+      Logout.ccdLogout
     )
   }
 
