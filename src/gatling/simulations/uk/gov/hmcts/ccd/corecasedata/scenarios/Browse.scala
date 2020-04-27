@@ -18,7 +18,7 @@ object Browse {
  val MinWaitForNextIteration = Environment.minWaitForNextIteration
  val MaxWaitForNextIteration = Environment.maxWaitForNextIteration
     
- val feedUserData = csv("CCDUserData.csv").circular
+ //val feedUserData = csv("CCDUserData.csv").circular
  val feedUserDataCMC = csv("CMCUserData.csv").circular
  val feedUserDataPB = csv("ProbateUserData.csv").circular
  val feedUserDataDV = csv("DivorceUserData.csv").circular
@@ -43,7 +43,7 @@ object Browse {
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     //.feed(CCDCreateCaseFeeder)
-    .feed(feedUserData)
+    //.feed(feedUserData)
     .feed(feedUserDataCMC)
     .feed(feedUserDataPB)
     .feed(feedUserDataDV)
