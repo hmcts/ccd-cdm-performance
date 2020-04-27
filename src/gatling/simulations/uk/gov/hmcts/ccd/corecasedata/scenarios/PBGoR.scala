@@ -18,7 +18,7 @@ object PBGoR {
 
   val headers_0 = Map(
     "Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-    "Origin" -> "https://idam-web-public.aat.platform.hmcts.net",
+    "Origin" -> "IdamURL",
     "Sec-Fetch-Mode" -> "navigate",
     "Sec-Fetch-Site" -> "same-origin",
     "Sec-Fetch-User" -> "?1",
@@ -32,14 +32,14 @@ object PBGoR {
   val headers_2 = Map(
     "Access-Control-Request-Headers" -> "content-type",
     "Access-Control-Request-Method" -> "GET",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site")
 
   val headers_3 = Map(
     "Accept" -> "application/json",
     "Content-Type" -> "application/json",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site")
 
@@ -52,7 +52,7 @@ object PBGoR {
   val headers_5 = Map(
     "Access-Control-Request-Headers" -> "content-type,experimental",
     "Access-Control-Request-Method" -> "GET",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site")
 
@@ -71,7 +71,7 @@ object PBGoR {
   val headers_8 = Map(
     "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-user-profile.v2+json;charset=UTF-8",
     "Content-Type" -> "application/json",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site",
     "experimental" -> "true")
@@ -79,7 +79,7 @@ object PBGoR {
   val headers_13 = Map(
     "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-banners.v2+json;charset=UTF-8",
     "Content-Type" -> "application/json",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site",
     "experimental" -> "true")
@@ -87,7 +87,7 @@ object PBGoR {
   val headers_14 = Map(
     "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-workbasket-input-details.v2+json;charset=UTF-8",
     "Content-Type" -> "application/json",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site",
     "experimental" -> "true")
@@ -119,7 +119,7 @@ object PBGoR {
       .formParam("save", "Sign in")
       .formParam("selfRegistrationEnabled", "false")
       .formParam("_csrf", "${csrf}")
-      .check(headerRegex("Location", "(?<=code=)(.*)&scope").saveAs("authCode"))
+      .check(headerRegex("Location", "(?<=code=)(.*)&client").saveAs("authCode"))
       .check(status.in(200, 302)))
 
     .exec(http("CDM_020_010_Login")
@@ -127,11 +127,11 @@ object PBGoR {
       .headers(headers_1))
 
     .exec(http("CDM_020_015_Login")
-      .options(BaseURL + "/oauth2?code=${authCode}&redirect_uri=ccd-case-management-web-aat.service.core-compute-aat.internal/oauth2redirect")
+      .options(BaseURL + "/oauth2?code=${authCode}&redirect_uri=" + CCDEnvurl + "/oauth2redirect")
       .headers(headers_2))
 
     .exec(http("CDM_020_020_Login")
-      .get(BaseURL + "/oauth2?code=${authCode}&redirect_uri=ccd-case-management-web-aat.service.core-compute-aat.internal/oauth2redirect")
+      .get(BaseURL + "/oauth2?code=${authCode}&redirect_uri=" + CCDEnvurl + "/oauth2redirect")
       .headers(headers_3))
 
     .exec(http("CDM_020_025_Login")

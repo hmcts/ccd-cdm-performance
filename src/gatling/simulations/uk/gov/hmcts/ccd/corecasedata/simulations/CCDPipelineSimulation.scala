@@ -14,7 +14,6 @@ class CCDPipelineSimulation extends Simulation  {
 
   val httpProtocol = Environment.HttpProtocol
     .baseUrl(BaseURL)
-    .proxy(Proxy("proxyout.reform.hmcts.net", 8080).httpsPort(8080))
     .doNotTrackHeader("1")
 
   val CCDOvernightPipelineE2E = scenario( "CCDOvernight").repeat(1) {

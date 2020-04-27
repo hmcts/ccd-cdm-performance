@@ -5,6 +5,6 @@ target/**
 *.iml
 *.project
 .gradle/
-build/
+build/**
 *.log
 resources/recorder.conf

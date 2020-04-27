@@ -33,7 +33,7 @@ object SSCS {
   val headers_3 = Map(
     "Accept" -> "application/json",
     "Content-Type" -> "application/json",
-    "Origin" -> "https://ccd-case-management-web-aat.service.core-compute-aat.internal",
+    "Origin" -> "CCDEnvurl",
     "Sec-Fetch-Mode" -> "cors",
     "Sec-Fetch-Site" -> "cross-site")
 
@@ -83,7 +83,7 @@ object SSCS {
       .formParam("save", "Sign in")
       .formParam("selfRegistrationEnabled", "false")
       .formParam("_csrf", "${csrf}")
-      .check(headerRegex("Location", "(?<=code=)(.*)&scope").saveAs("authCode"))
+      .check(headerRegex("Location", "(?<=code=)(.*)&client").saveAs("authCode"))
       .check(status.in(200, 302)))
 
     .exec(http("CDM_020_010_Login")
