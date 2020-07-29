@@ -162,13 +162,13 @@ object DVExcep {
 
   val DVCreateCase = group ("DIV_Create") {
 
-    exec(http("DIV_030_005_CreateCase")
+    exec(http("DIV_030_005_CreateCaseStartPage")
       .get("/aggregated/caseworkers/:uid/jurisdictions?access=create")
       .headers(CommonHeader))
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .exec(http("DIV_030_010_CreateCase")
+    .exec(http("DIV_030_010_CreateCaseUsingSolicitor")
       .get("/data/internal/case-types/DIVORCE/event-triggers/solicitorCreate?ignore-warning=false")
       .headers(headers_1)
       .check(jsonPath("$.event_token").saveAs("New_Case_event_token")))
@@ -264,14 +264,14 @@ object DVExcep {
 
   val DVDocUpload = group("DIV_DocUpload") {
 
-    exec(http("DIV_040_005_DocumentUpload")
+    exec(http("DIV_040_005_DocumentUploadPage")
       .get("/data/internal/cases/${New_Case_Id}/event-triggers/uploadDocument?ignore-warning=false")
       .headers(headers_5)
       .check(jsonPath("$.event_token").saveAs("existing_case_event_token")))
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .exec(http("DIV_040_010_DocumentUpload")
+    .exec(http("DIV_040_010_DocumentUploadToDM")
       .post(BaseURL + "/documents")
       .bodyPart(RawFileBodyPart("files", "2MB.pdf")
         .fileName("2MB.pdf")
@@ -282,7 +282,7 @@ object DVExcep {
       .check(regex("""http://(.+)/""").saveAs("DMURL"))
       .check(regex("""/documents/(.+)"""").saveAs("Document_ID")))
 
-    .exec(http("DIV_040_015_DocumentUpload")
+    .exec(http("DIV_040_015_DocumentUploadSubmit")
       .post("/data/caseworkers/:uid/jurisdictions/${DVJurisdiction}/case-types/${DVCaseType}/cases/${New_Case_Id}/events")
       .headers(CommonHeader)
       .body(StringBody("{\n  \"data\": {\n    \"D8DocumentsUploaded\": [\n      {\n        \"id\": null,\n        \"value\": {\n          \"DocumentType\": \"petition\",\n          \"DocumentEmailContent\": null,\n          \"DocumentDateAdded\": \"2020-02-12\",\n          \"DocumentComment\": null,\n          \"DocumentFileName\": null,\n          \"DocumentLink\": {\n            \"document_url\": \"http://dm-store-aat.service.core-compute-aat.internal/documents/${Document_ID}\",\n            \"document_binary_url\": \"http://dm-store-aat.service.core-compute-aat.internal/documents/${Document_ID}/binary\",\n            \"document_filename\": \"2MB.pdf\"\n          }\n        }\n      }\n    ]\n  },\n  \"event\": {\n    \"id\": \"uploadDocument\",\n    \"summary\": \"\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${existing_case_event_token}\",\n  \"ignore_warning\": false,\n  \"event_data\": {\n    \"D8DocumentsUploaded\": [\n      {\n        \"id\": null,\n        \"value\": {\n          \"DocumentType\": \"petition\",\n          \"DocumentEmailContent\": null,\n          \"DocumentDateAdded\": \"2020-02-12\",\n          \"DocumentComment\": null,\n          \"DocumentFileName\": null,\n          \"DocumentLink\": {\n            \"document_url\": \"http://dm-store-aat.service.core-compute-aat.internal/documents/${Document_ID}\",\n            \"document_binary_url\": \"http://dm-store-aat.service.core-compute-aat.internal/documents/${Document_ID}/binary\",\n            \"document_filename\": \"2MB.pdf\"\n          }\n        }\n      }\n    ]\n  },\n  \"case_reference\": \"${New_Case_Id}\"\n}")))
@@ -298,19 +298,23 @@ object DVExcep {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .exec(http("DIV_050_010_SearchAndView")
+    .exec(http("DIV_050_010_SearchForCase")
       .get("/aggregated/caseworkers/:uid/jurisdictions/${DVJurisdiction}/case-types/${DVCaseType}/cases?view=WORKBASKET&page=1")
+      .headers(CommonHeader))
+
+    .exec(http("DIV_050_015_SearchForCase")
+      .get("/data/caseworkers/:uid/jurisdictions/DIVORCE/case-types/DIVORCE/cases/pagination_metadata")
       .headers(CommonHeader))
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .exec(http("DIV_050_015_SearchAndView")
+    .exec(http("DIV_050_015_OpenCase")
       .get("/data/internal/cases/${New_Case_Id}")
       .headers(headers_6))
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .exec(http("DIV_050_020_SearchAndOpenDoc")
+    .exec(http("DIV_050_020_OpenDocument")
       .get("/documents/${Document_ID}/binary")
       .headers(headers_7))
 

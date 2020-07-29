@@ -9,8 +9,8 @@ object Environment {
   val ccdEnvurl = "https://www-ccd.aat.platform.hmcts.net"
   val baseURL = "https://gateway-ccd.aat.platform.hmcts.net"
   
-  val minThinkTime = 10 
-  val maxThinkTime = 20
+  val minThinkTime = 1 //10
+  val maxThinkTime = 2 //20
   val constantthinkTime = 7
   val minWaitForNextIteration = 120 //120
   val maxWaitForNextIteration = 240 //240

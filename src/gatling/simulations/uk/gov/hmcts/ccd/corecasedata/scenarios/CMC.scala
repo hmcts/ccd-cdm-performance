@@ -16,6 +16,7 @@ object CMC {
   val feedUserData = csv("CMCUserData.csv").circular
   val MinThinkTime = Environment.minThinkTime
   val MaxThinkTime = Environment.maxThinkTime
+  val cmcCaseActivityRepeat = 2
 
   val headers_0 = Map(
     "Accept" -> "application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-workbasket-input-details.v2+json;charset=UTF-8",
@@ -165,21 +166,26 @@ object CMC {
   }
 
   val CMCCreateCase = group("CMC_Create") {
-    exec(http("CMC_030_005_CreateCase")
+    exec(http("CMC_030_005_CreateCasePage")
       .get(BaseURL + "/aggregated/caseworkers/:uid/jurisdictions?access=create")
       .headers(CommonHeader))
 
-    .exec(http("CMC_030_010_CreateCase")
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .exec(http("CMC_030_010_CreateCaseDetails1")
       .get("/data/internal/case-types/${CMCCaseType}/event-triggers/CreateClaim?ignore-warning=false")
       .headers(headers_1)
       .check(jsonPath("$.event_token").saveAs("New_Case_event_token")))
 
-    .exec(http("CMC_030_015_CreateCase")
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .exec(http("CMC_030_015_CreateCaseDetails2")
       .post(BaseURL + "/data/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases?ignore-warning=false")
       .headers(CommonHeader)
       .body(StringBody("{\n  \"data\": {},\n  \"event\": {\n    \"id\": \"CreateClaim\",\n    \"summary\": \"pipeline-test1202\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${New_Case_event_token}\",\n  \"ignore_warning\": false,\n  \"draft_id\": null\n}"))
       .check(jsonPath("$.id").saveAs("New_Case_Id")))
 
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
   }
 
   val CMCSubmitCase = group("CMC_Submit") {
@@ -193,6 +199,15 @@ object CMC {
       .headers(headers_23)
       .body(StringBody("{\n  \"data\": {},\n  \"event\": {\n    \"id\": \"IssueClaim\",\n    \"summary\": \"pipeline-claim-submitted\",\n    \"description\": \"\"\n  },\n  \"event_token\": \"${existing_case_event_token}\",\n  \"ignore_warning\": false\n}")))
 
+    .repeat(cmcCaseActivityRepeat) {
+      exec(http("CMC_CaseActivity")
+        .get("/activity/cases/${New_Case_Id}/activity")
+        .headers(headers_2))
+
+        .pause(3)
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
   }
 
   val CMCSearchAndView = group("CMC_View") {
@@ -202,20 +217,26 @@ object CMC {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .exec(http("CMC_050_010_SearchAndView")
+    .exec(http("CMC_050_010_SearchForCase")
       .get("/aggregated/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases?view=WORKBASKET&page=1&case_reference=${New_Case_Id}")
       .headers(CommonHeader))
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .exec(http("CMC_050_015_SearchAndView")
+    .exec(http("CMC_050_015_SearchForCase")
       .get("/data/caseworkers/:uid/jurisdictions/${CMCJurisdiction}/case-types/${CMCCaseType}/cases/pagination_metadata?case_reference=${New_Case_Id}")
       .headers(CommonHeader))
 
-    .exec(http("CMC_050_020_SearchAndView")
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .exec(http("CMC_050_020_OpenCase")
       .get("/data/internal/cases/${New_Case_Id}")
       .headers(headers_8))
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .repeat(cmcCaseActivityRepeat) {
+      exec(http("CMC_CaseActivity")
+        .get("/activity/cases/${New_Case_Id}/activity")
+        .headers(headers_2))
+
+        .pause(3)
+    }
   }
 }
