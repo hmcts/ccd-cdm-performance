@@ -1,102 +1,3 @@
-//plugins {
-//    id 'org.owasp.dependencycheck' version '5.1.0'
-//    id 'scala'
-//    id 'com.github.lkishalmi.gatling' version '3.0.2'
-//    id 'java-gradle-plugin'
-//    id 'groovy'
-//    id 'com.gradle.plugin-publish' version '0.9.8'
-//    id 'maven-publish'
-//}
-//
-////apply plugin: 'java'
-//apply plugin: 'scala'
-//group 'uk.gov.hmcts.reform'
-//version = '1.0'
-//
-////jar {
-////    manifest {
-////        attributes 'Implementation-Title': 'CCD UI Performance Tests',
-////                'Implementation-Version': version
-////    }
-////}
-//
-//jar {
-//    manifest {
-//        attributes 'Main-Class': 'io.gatling.app.Gatling'
-//    }
-//    from {
-//        configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) }
-//    }
-//    from sourceSets.test.output
-//    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-//}
-//
-///*dependencyCheck {
-//    // Specifies if the build should be failed if a CVSS score above a specified level is identified.
-//    // range of 0-10 fails the build, anything greater and it doesn't fail the build
-//    failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
-//    suppressionFile = 'dependency-check-suppressions.xml'
-//}*/
-//
-//repositories {
-//    jcenter()
-//}
-//
-//ScalaCompileOptions.metaClass.daemonServer = true
-//ScalaCompileOptions.metaClass.fork = true
-//ScalaCompileOptions.metaClass.useAnt = false
-//ScalaCompileOptions.metaClass.useCompileDaemon = false
-//
-////dependencies {
-////    compile 'org.scala-lang:scala-library:2.12.8'
-////
-////    gatlingCompile 'com.warrenstrange:googleauth:1.1.5'
-////    compile group: 'io.gatling', name: 'gatling-app', version: '3.2.0'
-////
-////    compile group: 'io.gatling', name: 'gatling-recorder', version: '3.2.0'
-////    compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '3.2.0'
-////
-////}
-//
-//ext {
-//    gatlingVersion = '3.1.1'
-//    scalaVersion = '2.12.8'
-//}
-//
-//dependencies {
-//    testCompile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
-//    compileOnly group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
-//    testCompile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
-//    gatlingCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
-//    gatlingCompile 'com.warrenstrange:googleauth:1.1.5'
-//    gatlingRuntime group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
-//}
-//
-//gatling {
-//    toolVersion '3.1.1'
-//    scalaVersion '2.12.8'
-//    simulations = ['uk.gov.hmcts.ccd.corecasedata.simulations.CCDPipelineSimulation']
-//}
-//
-//test {
-//    testLogging {
-//        showStandardStreams = true
-//    }
-//    dependsOn("publishToMavenLocal")
-//    systemProperty "com.github.lkishalmi.gatling.version", project.version
-//}
-//
-//pluginBundle {
-//    website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
-//    vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
-//    description = 'Gatling Simulation Execution'
-//    tags = ['gatling', 'load test', 'stress test', 'performance test', 'scala']
-//
-//
-//}
-//
-//ext ['netty.version'] = '4.0.51.Final'
-
 plugins {
     id 'com.github.lkishalmi.gatling' version '3.0.2'
     id "org.owasp.dependencycheck" version "5.2.1"
@@ -108,8 +9,8 @@ apply plugin: 'com.github.lkishalmi.gatling'
 group 'uk.gov.hmcts.reform'
 version = '1.0'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "11"
+targetCompatibility = "11"
 
 jar {
     manifest {
