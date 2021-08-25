@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccd.corecasedata.scenarios.utils
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import com.typesafe.config.ConfigFactory
 
 object Environment {
 
