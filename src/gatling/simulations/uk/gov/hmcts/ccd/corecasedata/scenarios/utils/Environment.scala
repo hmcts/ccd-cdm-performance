@@ -6,9 +6,13 @@ import io.gatling.http.Predef._
 object Environment {
 
   val idamURL = "https://idam-web-public.aat.platform.hmcts.net"
+  val idamAPI = "https://idam-api.aat.platform.hmcts.net"
   val ccdEnvurl = "https://www-ccd.aat.platform.hmcts.net"
   val baseURL = "https://gateway-ccd.aat.platform.hmcts.net"
-  
+  val s2sUrl = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+  val ccdDataStoreUrl = "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
+  val ccdGatewayCS = ConfigFactory.load.getString("auth.ccdGatewayCS")
+
   val minThinkTime = 1 //10
   val maxThinkTime = 2 //20
   val constantthinkTime = 7
@@ -26,7 +30,6 @@ object Environment {
     "Origin" -> ccdEnvurl)
 
   val idam_header = Map(
-    //"Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
     "Accept-Encoding" -> "gzip, deflate, br",
     "Accept-Language" -> "en-US,en;q=0.9",

@@ -17,7 +17,23 @@ properties([
 def product = "ccd"
 def component = "case-worker"
 
+def secrets = [
+    'ccd-aat': [
+        secret('ccd-api-gateway-oauth2-client-secret', 'S2S_SECRET')
+    ]
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [$class     : 'AzureKeyVaultSecret',
+     secretType : 'Secret',
+     name       : secretName,
+     version    : '',
+     envVariable: envVar
+    ]
+}
+
 withNightlyPipeline("java", product, component) {
+    loadVaultSecrets(secrets)
     env.TEST_URL = 'https://gateway-ccd.aat.platform.hmcts.net'
     env.BaseURL = 'https://gateway-ccd.aat.platform.hmcts.net'
     env.IDAM_URL = 'https://idam-web-public.aat.platform.hmcts.net'

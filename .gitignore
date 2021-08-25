@@ -8,3 +8,6 @@ target/**
 build/**
 *.log
 resources/recorder.conf
+bin/*
+.classpath
+.settings/*
