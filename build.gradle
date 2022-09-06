@@ -1,5 +1,5 @@
 plugins {
-    id "org.owasp.dependencycheck" version "6.0.2"
+    id "org.owasp.dependencycheck" version "6.5.3"
     id 'com.github.lkishalmi.gatling' version '3.0.2'
     id 'groovy'
     id 'com.gradle.plugin-publish' version '0.9.8'
@@ -33,6 +33,18 @@ repositories {
 ext {
     gatlingVersion = '3.3.1'
     scalaVersion = '2.12.12'
+}
+
+dependencyCheck {
+  // Specifies if the build should be failed if a CVSS score above a specified level is identified.
+  // range of 0-10 fails the build, anything greater and it doesn't fail the build
+  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
+  suppressionFile = 'config/owasp/suppressions.xml'
+
+  analyzers {
+    // Disable scanning of .NET related binaries
+    assemblyEnabled = false
+  }
 }
 
 dependencies {
