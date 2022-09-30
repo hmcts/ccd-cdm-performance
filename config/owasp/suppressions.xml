@@ -13,6 +13,7 @@
       CVE-2013-4152     refer https://tools.hmcts.net/jira/browse/CCD-3101
       CVE-2013-7315     refer https://tools.hmcts.net/jira/browse/CCD-3103
       CVE-2014-0054     refer https://tools.hmcts.net/jira/browse/CCD-3102
+      CVE-2022-38752 refer https://tools.hmcts.net/jira/browse/CCD-3736
     </notes>
     <cve>CVE-2016-1000027</cve>
     <cve>CVE-2018-11039</cve>
@@ -24,6 +25,7 @@
     <cve>CVE-2013-4152</cve>
     <cve>CVE-2013-7315</cve>
     <cve>CVE-2014-0054</cve>
+    <cve>CVE-2022-38752</cve>
   </suppress>
   <!--End of false positives section -->
 
@@ -38,6 +40,7 @@
       CVE-2022-22950  refer https://tools.hmcts.net/jira/browse/CCD-3400
       CVE-2022-31569  refer https://tools.hmcts.net/jira/browse/CCD-3536
       CVE-2022-25857 refer https://tools.hmcts.net/jira/browse/CCD-3658
+      CVE-2022-38752 refer https://tools.hmcts.net/jira/browse/CCD-3736
     </notes>
     <cve>CVE-2022-22965</cve>
     <cve>CVE-2022-22968</cve>
@@ -50,6 +53,7 @@
     <cve>CVE-2022-38749</cve>
     <cve>CVE-2022-38750</cve>
     <cve>CVE-2022-38751</cve>
+    <cve>CVE-2022-38752</cve>
   </suppress>
   <!--End of temporary suppression section -->
 
