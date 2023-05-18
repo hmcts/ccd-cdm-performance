@@ -39,7 +39,7 @@ withNightlyPipeline("java", product, component) {
     env.IDAM_URL = 'https://idam-web-public.aat.platform.hmcts.net'
     env.CCD_URL = 'https://www-ccd.aat.platform.hmcts.net'
 
-    enablePerformanceTest()
+//    enablePerformanceTest()
 
     after('performanceTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
